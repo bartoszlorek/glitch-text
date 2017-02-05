@@ -1,0 +1,3 @@
+[submodule "aframe"]
+	path = modules/aframe
+	url = https://github.com/ubery/aframe.git
