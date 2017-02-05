@@ -1,12 +1,37 @@
 
 require.config({
 	paths: {
-		aframe: 'modules/aframe/src/aframe'
+		aframe: '../external/aframe/src/aframe',
+        glitchText: 'glitch-text'
 	}
 });
 
-require( ['aframe'], function(af) {
+require( ['glitchText'], function(GlitchText) {
 
-    console.log(af);
+    var glitch = new GlitchText('glitch');
+
+
+
+
+    /*this.animate(2, 10, function(progress) {
+        return this.glitchRandom(progress);
+    });*/
+
+
+    var request = glitch.repeat(10, function() {
+        console.log(request.id);
+    });
+
+    aframe.setTimeout(function() {
+        aframe.clear(request);
+        console.log('clear', request.id);
+    }, 10000);
+
+
+
+
+
+
+    //glitch
 
 });
