@@ -6,7 +6,7 @@ require.config({
 	}
 });
 
-require( ['glitchText'], function(GlitchText) {
+require( ['aframe', 'glitchText'], function(aframe, GlitchText) {
 
     var glitch = new GlitchText('glitch');
 
