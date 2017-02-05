@@ -6,32 +6,14 @@ require.config({
 	}
 });
 
-require( ['aframe', 'glitchText'], function(aframe, GlitchText) {
+require( ['glitchText'], function(GlitchText) {
 
-    var glitch = new GlitchText('glitch');
+    var glitch = new GlitchText('glitch')
+        .animateOffset()
+        .repeat(10, function() {
+            this.animateRandom();
+        }, 'unique_task')
 
-
-
-
-    /*this.animate(2, 10, function(progress) {
-        return this.glitchRandom(progress);
-    });*/
-
-
-    var request = glitch.repeat(10, function() {
-        console.log(request.id);
-    });
-
-    aframe.setTimeout(function() {
-        aframe.clear(request);
-        console.log('clear', request.id);
-    }, 10000);
-
-
-
-
-
-
-    //glitch
+    console.log(glitch);
 
 });

@@ -18,6 +18,7 @@ define( ['aframe'], function (aframe) {
     function GlitchText(elementID) {
         this.element = document.getElementById(elementID);
         this.originalText = this.text();
+        this.requests = {};
         return this;
     }
 
@@ -82,31 +83,35 @@ define( ['aframe'], function (aframe) {
                 .join('');
         },
 
-        animate: function(duration, steps, callback) {
+        animate: function(duration, steps, callback, name) {
             if (typeof callback !== 'function') {
                 throw 'Animate method needs callback!';
             }
-            var progress = 0,
-                requestID;
+            var time = Math.round(duration * 1000 / steps),
+                progress = 0,
+                request,
 
-            function updateAnimation() {
-                if (progress >= 1) {
-                    aframe.clear(requestID);
-                    return;
-                }
-                progress += 1/steps;
-                if (progress >= .99) progress = 1;
-                this.text(callback.call(this, progress));
+                update = function() {
+                    if (progress >= 1) {
+                        return false;
+                    }
+                    progress += 1/steps;
+                    if (progress >= .99) {
+                        progress = 1;
+                    }
+                    this.text(callback(progress));
+                };
 
-                requestID = aframe.setInterval(
-                    updateAnimation.bind(this),
-                    Math.round(duration * 1000 / steps)
-                );
-            }
-            updateAnimation.call(this);
+            update = update.bind(this);
+            callback = callback.bind(this);
+            request = aframe.setInterval(update, time);
+
+            if (typeof name === 'string')
+                this.requests[name] = request;
+            return this;
         },
 
-        repeat: function(frequency, callback) {
+        repeat: function(frequency, callback, name) {
             if (typeof callback !== 'function') {
                 throw 'Repeat method needs callback!';
             }
@@ -119,36 +124,33 @@ define( ['aframe'], function (aframe) {
                     callback();
                     iterate();
                 }, frequency * 1000 * Math.random());
-            }
-            iterate();
-            return request;
-        }/*,
+            } iterate();
 
-
-        animateOffset: function(options) {
-            options = options || {};
-            var duration = options.duration || 2,
-                steps = options.steps || 30,
-                delay = options.delay || 0;
-
-            this.setText(this.glitchOffset(0));
-            requestTimeout(
-                this.animate.bind(this, duration, steps, function(progress) {
-                    return this.glitchOffset(progress);
-                }), delay * 1000
-            );
+            if (typeof name === 'string')
+                this.requests[name] = request;
+            return this;
         },
 
-        animateRandom: function(options) {
-            options = options || {};
-            var duration = options.duration || .5,
-                steps = options.steps || 10;
+        animateOffset: function(duration, steps) {
+            this.animate(
+                duration || 2,
+                steps || 30,
+                function(progress) {
+                    return this.glitchOffset(progress);
+                });
+            return this;
+        },
 
-            this.animate.call(this, duration, steps, function(progress) {
-                if (progress < .5) return false;
-                return this.glitchRandom(1 - progress);
-            });
-        }*/
+        animateRandom: function(duration, steps) {
+            this.animate(
+                duration || .5,
+                steps || 10,
+                function(progress) {
+                    if (progress < .5) return false;
+                    return this.glitchRandom(1 - progress);
+                });
+            return this;
+        }
     }
 
     return GlitchText;
