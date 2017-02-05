@@ -1,2 +1,2 @@
 # glitch-text
-Glitch Text Tools
+Glitch Text AMD

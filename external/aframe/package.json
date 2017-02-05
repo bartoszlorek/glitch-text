@@ -1,21 +1,21 @@
 {
-  "name": "glitch-text",
+  "name": "aframe",
   "version": "1.0.0",
-  "description": "Glitch Text AMD",
+  "description": "Request Animation Frame Utilities AMD",
   "main": "src/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ubery/glitch-text.git"
+    "url": "git+https://github.com/ubery/aframe.git"
   },
   "author": "Bartosz Lorek",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ubery/glitch-text/issues"
+    "url": "https://github.com/ubery/aframe/issues"
   },
-  "homepage": "https://github.com/ubery/glitch-text#readme",
+  "homepage": "https://github.com/ubery/aframe#readme",
   "dependencies": {
     "requirejs": "^2.3.2"
   }
