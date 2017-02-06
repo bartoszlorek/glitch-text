@@ -6,13 +6,18 @@ require.config({
 	}
 });
 
-require( ['glitchText'], function(GlitchText) {
+require( ['aframe', 'glitchText'], function(aframe, GlitchText) {
 
     var glitch = new GlitchText('glitch')
         .animateOffset()
-        .repeat(10, function() {
+        .repeat(5, function() {
             this.animateRandom();
-        }, 'unique_task')
+        }, 'unique_name');
+
+    aframe.setTimeout(function() {
+        glitch.stop();
+        console.log('stop!');
+    }, 5000);
 
     console.log(glitch);
 

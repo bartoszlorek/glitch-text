@@ -131,6 +131,23 @@ define( ['aframe'], function (aframe) {
             return this;
         },
 
+        stop: function(name) {
+            if (typeof name === 'string') {
+                for (var prop in this.requests) {
+                    if (prop === name) {
+                        aframe.clear(this.requests[prop]);
+                        delete this.requests[prop];
+                        break;
+                    }
+                }  
+            } else {
+                for (var prop in this.requests)
+                    aframe.clear(this.requests[prop]);
+                this.requests = [];
+            }
+            return this;
+        },
+
         animateOffset: function(duration, steps) {
             this.animate(
                 duration || 2,
