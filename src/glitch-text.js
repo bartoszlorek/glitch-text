@@ -2,10 +2,32 @@
 
 define( ['aframe'], function (aframe) {
 
-    function randomLetter() {
-        var letters = '57e5d1a9f98f8b2f6880de32',
-            n = Math.floor(Math.random() * letters.length);
-        return letters[n];
+    function getArgument(args, type, index, failure) {
+        var value, temp;
+
+        if (typeof type !== 'string' && type !== '') {
+            throw 'getArgument function needs type!';
+        }
+        if (typeof index === 'number') {
+            temp = index < 0
+                ? args[args.length + index]
+                : args[index];
+            if (typeof temp === type)
+                value = temp;
+
+        } else if (index.constructor === Array) {
+            temp = args
+                .slice(index)
+                .filter(function(arg) {
+                    return typeof arg === type;
+                });
+            if (temp.length > 0)
+                value = temp[0];
+
+        } else throw 'getArgument function needs index!';
+        return typeof value === 'undefined'
+            ? failure
+            : value;
     }
 
     function getDeepestChild(element) {
@@ -13,6 +35,16 @@ define( ['aframe'], function (aframe) {
         return children.length > 0
             ? getDeepestChild(children[0])
             : element;
+    }
+
+    function clampNumber(value, min, max) {
+        return Math.min(Math.max(value, min), max);
+    }
+
+    function randomLetter() {
+        var letters = '57e5d1a9f98f8b2f6880de32',
+            n = Math.floor(Math.random() * letters.length);
+        return letters[n];
     }
 
     function GlitchText(elementID) {
@@ -34,16 +66,30 @@ define( ['aframe'], function (aframe) {
                 : inner.textContent;
         },
 
-        glitchOffset: function(offset) {
+        glitchSlice: function(start, end) {
+            start = (start = parseFloat(start)) || 0;
+            end = (end = parseFloat(end)) || 1;
+            if (start < 0) start = 1 + start;
+            if (end < 0) end = 1 + end;
+            start = clampNumber(start, 0, 1);
+            end = clampNumber(end, 0, 1);
+
             var text = this.originalText;
-            if ((offset = offset || 0) >= 1)
+            if (start === 1 || start > end)
                 return text;
+
             return text
                 .split('')
                 .map(function(letter, index) {
                     if (letter === ' ')
                         return letter;
-                    return index/text.length >= offset
+                    var percent = index/text.length;
+                    if (percent >= .99) {
+                        percent = 1;
+                    }
+                    return percent >= start
+                        && percent <= end
+                        && start !== end
                         ? randomLetter()
                         : letter;
                 })
@@ -83,42 +129,54 @@ define( ['aframe'], function (aframe) {
                 .join('');
         },
 
-        animate: function(duration, steps, callback, name) {
+        // [duration, steps, ]callback[, name]
+        animate: function() {
+            var args = Array.prototype.slice.call(arguments),
+                duration = getArgument(args, 'number', 0, 1),
+                steps = getArgument(args, 'number', 1, 20),
+                callback = getArgument(args, 'function', [-2], false),
+                name = getArgument(args, 'string', [-1], false),
+                progress = 0,
+                request;
+
             if (typeof callback !== 'function') {
                 throw 'Animate method needs callback!';
             }
-            var time = Math.round(duration * 1000 / steps),
-                progress = 0,
-                request,
-
-                update = function() {
-                    if (progress >= 1) {
-                        return false;
-                    }
-                    progress += 1/steps;
-                    if (progress >= .99) {
-                        progress = 1;
-                    }
-                    this.text(callback(progress));
-                };
+            var update = function() {
+                if (progress >= 1) {
+                    return false;
+                }
+                progress += 1/steps;
+                if (progress >= .99) {
+                    progress = 1;
+                }
+                var newText = callback(progress);
+                if (typeof newText === 'string')
+                    this.text(newText);
+            };
 
             update = update.bind(this);
             callback = callback.bind(this);
-            request = aframe.setInterval(update, time);
+            request = aframe.setInterval(update,
+                Math.round(duration * 1000 / steps));
 
             if (typeof name === 'string')
                 this.requests[name] = request;
             return this;
         },
 
-        repeat: function(frequency, callback, name) {
+        // [frequency, ]callback[, name]
+        repeat: function() {
+            var args = Array.prototype.slice.call(arguments),
+                frequency = getArgument(args, 'number', 0, 20),
+                callback = getArgument(args, 'function', [-2], false),
+                name = getArgument(args, 'string', [-1], false),
+                request = {};
+
             if (typeof callback !== 'function') {
                 throw 'Repeat method needs callback!';
             }
-            frequency = frequency || 20;
             callback = callback.bind(this);
-
-            var request = {};
             function iterate() {
                 request.id = aframe.setTimeout(function() {
                     callback();
@@ -145,27 +203,6 @@ define( ['aframe'], function (aframe) {
                     aframe.clear(this.requests[prop]);
                 this.requests = [];
             }
-            return this;
-        },
-
-        animateOffset: function(duration, steps) {
-            this.animate(
-                duration || 2,
-                steps || 30,
-                function(progress) {
-                    return this.glitchOffset(progress);
-                });
-            return this;
-        },
-
-        animateRandom: function(duration, steps) {
-            this.animate(
-                duration || .5,
-                steps || 10,
-                function(progress) {
-                    if (progress < .5) return false;
-                    return this.glitchRandom(1 - progress);
-                });
             return this;
         }
     }
