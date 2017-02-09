@@ -1,9 +1,9 @@
 
 require.config({
 	paths: {
-		aframe: '../external/aframe/src/aframe',
+        aframe: '../external/aframe/src/aframe',
         glitchText: 'glitch-text'
-	}
+    }
 });
 
 require( ['aframe', 'glitchText'], function(aframe, GlitchText) {

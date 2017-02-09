@@ -1,4 +1,3 @@
-/*! Copyright (c) 2017 Bartosz Lorek */
 
 define( ['aframe'], function (aframe) {
 
@@ -101,20 +100,22 @@ define( ['aframe'], function (aframe) {
                 percent = 0;
             }
             var text = this.originalText,
-                remain = Math.round(text.length * percent),
+                requiredAmount = Math.round(text.length * percent),
+                uniqueIndex,
                 indexes = [],
-                process, position;
+                index;
 
-            if (remain <= 0) {
+            if (requiredAmount <= 0) {
                 return text;
             }
-            while (remain--) {
-                process = true;
-                while (process) {
-                    position = Math.round(Math.random() * text.length);
-                    if (indexes.indexOf(position) < 0) {
-                        indexes.push(position);
-                        process = false;
+            while (requiredAmount--) {
+                uniqueIndex = false;
+                
+                while (! uniqueIndex) {
+                    index = Math.round(Math.random() * text.length);
+                    if (indexes.indexOf(index) < 0) {
+                        indexes.push(index);
+                        uniqueIndex = true;
                     }
                 }
             }
