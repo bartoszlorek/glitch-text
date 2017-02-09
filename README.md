@@ -1,5 +1,8 @@
 # Glitch Text
-Includes https://github.com/ubery/aframe
+
+
+[demo](http://bartoszlorek.pl/run/glitch-text/)
+
 
 ## Usage
 Low-level methods return element's glitched textContent.
@@ -27,11 +30,9 @@ Clear animation set with the methods above. Stop all when `name` is undefined.
 .stop( [name] )
 ```
 
-## Examples
+Includes https://github.com/ubery/aframe
 
-```javascript
-require( ['glitchText'], function(glitchText) { ... })
-```
+## Examples
 
 Animate heading in alternative ways. Then call random tick in intervals between 0 and 5 seconds. Finally after 30 seconds stop repetitions uniquely named.
 
