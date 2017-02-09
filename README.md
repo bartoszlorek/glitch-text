@@ -1,5 +1,5 @@
 # Glitch Text
-Depends on https://github.com/ubery/aframe
+Includes https://github.com/ubery/aframe
 
 ## Usage
 Low-level methods return element's glitched textContent.
