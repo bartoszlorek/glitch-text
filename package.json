@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ubery/glitch-text.git"
+    "url": "git+https://github.com/bartoszlorek/glitch-text.git"
   },
   "author": "Bartosz Lorek",
   "license": "MIT",
