@@ -1,7 +1,7 @@
 import './raf-polyfill'
 
-function repeatUntil(callback) {
-    const request = { name: '' }
+export function repeatUntil(callback) {
+    const request = {}
     const loop = () => {
         if (callback() !== false) {
             request.id = requestAnimationFrame(loop)
@@ -11,10 +11,8 @@ function repeatUntil(callback) {
     return request
 }
 
-function repeatDelay(callback, delay = 0) {
-    const params = Array.prototype.slice.call(arguments, 2)
+export function repeatDelay(callback, delay = 0, ...params) {
     let start = Date.now()
-
     return repeatUntil(() => {
         let current = Date.now()
         if (current - start >= delay) {
@@ -32,7 +30,7 @@ export default {
     },
     setInterval: repeatDelay,
     setTimeout: (...args) => {
-        const [callback] = args
+        const callback = args[0]
         args[0] = (...params) => {
             callback.apply(null, params)
             return false
