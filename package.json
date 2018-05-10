@@ -4,9 +4,10 @@
   "description": "Glitch Text AMD",
   "main": "src/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "update": "git submodule update --init --recursive",
-    "build": "webpack --config webpack.config.lib.js"
+    "start": "webpack --progress --colors --watch",
+    "build": "webpack -p --config webpack.config.lib.js",
+    "test": "jest",
+    "test-watch": "npm test -- --watch"
   },
   "repository": {
     "type": "git",
@@ -14,9 +15,15 @@
   },
   "author": "Bartosz Lorek",
   "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "lodash": "^4.17.4"
+  },
   "devDependencies": {
-    "requirejs": "^2.3.2",
-    "webpack": "^2.2.1"
+    "babel-core": "^6.26.0",
+    "babel-loader": "^7.1.2",
+    "babel-plugin-lodash": "^3.3.2",
+    "babel-preset-es2015": "^6.24.1",
+    "jest-cli": "^21.1.0",
+    "webpack": "^3.6.0"
   }
 }

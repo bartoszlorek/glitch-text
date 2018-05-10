@@ -1,4 +1,0 @@
-[submodule "aframe"]
-	path = external/aframe
-	url = https://github.com/ubery/aframe.git
-	branch = master
