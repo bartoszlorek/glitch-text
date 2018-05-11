@@ -1,5 +1,7 @@
+import Fraction from 'fraction.js'
 import parseNode from './.utils/parse-node'
 import aframe from './.utils/aframe'
+import createRequests from './.internal/create-requests'
 
 function glitchSlice(string, start, end) {
     // start = (start = parseFloat(start)) || 0;
@@ -34,14 +36,16 @@ function glitchText(node, charset) {
     if (element == null) {
         throw `${element} is not a valid element`
     }
-
     const originalText = element.textContent
-    const requests = []
+    const requests = createRequests()
 
     const setText = value => {
         if (typeof value === 'string') {
             element.textContent = value
         }
+    }
+    const getText = () => {
+        return element.textContent
     }
 
     const api = {
@@ -51,66 +55,68 @@ function glitchText(node, charset) {
         random: percentage => {
             return 0
         },
-        animate: (duration = 1000, steps = 20, callback, name = '') => {
+
+        animate: (duration, steps, callback, name) => {
             if (typeof callback !== 'function') {
                 throw 'animate method needs callback function'
             }
             if (steps <= 0) {
                 steps = 1
             }
-            let progress = 0
-            const stepValue = 1 / steps
-            const stepTime = Math.round(duration / steps)
-
+            let progress = new Fraction(0)
+            const delay = Math.round(duration / steps)
             const request = aframe.setInterval(() => {
                 if (progress >= 1) {
-                    return false
+                    return requests.remove(request)
                 }
-                progress += stepValue
-                if (progress >= 0.99) {
-                    progress = 1
-                }
-                let result = callback(progress)
+                progress = progress.add(1 / steps)
+                let result = callback(
+                    progress.valueOf(),
+                    getText(),
+                    originalText
+                )
                 if (result === false) {
-                    return false
+                    return requests.remove(request)
                 }
                 setText(result)
-            }, stepTime)
+            }, delay)
 
-            request.name = name
-            requests.push(request)
+            requests.add(request, name)
             return api
         },
-        repeat: (freq = 500, variation = 0, callback, name = '') => {
+
+        repeat: (freq, variation, callback, name) => {
             if (typeof callback !== 'function') {
                 throw 'repeat method needs callback function'
             }
-            let request = { name }
+            const request = {}
             const iterate = () => {
                 let delay = freq + variation * (Math.random() * 2 - 1)
                 if (delay < 0) {
                     delay = 0
                 }
-                let next = aframe.setTimeout(() => {
+                let { id } = aframe.setTimeout(() => {
                     if (callback() === false) {
                         return false
                     }
                     iterate()
                 }, delay)
-                request.id = next.id
+                request.id = id
             }
-
             iterate()
-            requests.push(request)
+            requests.add(request, name)
             return api
         },
+
         stop: name => {
-            if (name === undefined) {
-                requests.filter(request => {
+            if (name !== undefined) {
+                requests.remove(name, request => {
                     aframe.clear(request)
                 })
             } else {
-                aframe.clear(requests[name])
+                requests.clear(request => {
+                    aframe.clear(request)
+                })
             }
         }
     }
