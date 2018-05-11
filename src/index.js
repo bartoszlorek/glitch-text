@@ -44,9 +44,6 @@ function glitchText(node, charset) {
             element.textContent = value
         }
     }
-    const getText = () => {
-        return element.textContent
-    }
 
     const api = {
         slice: (start, end) => {
@@ -70,11 +67,7 @@ function glitchText(node, charset) {
                     return requests.remove(request)
                 }
                 progress = progress.add(1 / steps)
-                let result = callback(
-                    progress.valueOf(),
-                    getText(),
-                    originalText
-                )
+                let result = callback(progress.valueOf())
                 if (result === false) {
                     return requests.remove(request)
                 }

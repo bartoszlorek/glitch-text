@@ -1,3 +1,10 @@
+/*
+    request = {
+        name: [String]
+        id: [Number]
+    }
+*/
+
 function createRequests(set = []) {
     return {
         add: (request, name) => {
@@ -8,7 +15,8 @@ function createRequests(set = []) {
         remove: (request, iteratee) => {
             let index = -1
             const length = set.length
-            const name = typeof request === 'string' ? request : request.name
+            const name = typeof request === 'string'
+                ? request : request.name
 
             while (++index < length) {
                 if (set[index].name === name) {

@@ -47,7 +47,6 @@ describe('initialize and error handling', () => {
 
 describe('animate', () => {
     // duration is irrelevant in this tests
-    const text = 'the quick brown fox'
 
     it('should throw on falsy callback', () => {
         expect(() => glitch.animate()).toThrow()
@@ -60,12 +59,7 @@ describe('animate', () => {
 
         jest.runAllTimers()
         const { calls } = callback.mock
-        expect(calls).toEqual([
-            [0.25, text, text],
-            [0.5, text, text],
-            [0.75, text, text],
-            [1, text, text]
-        ])
+        expect(calls).toEqual([[0.25], [0.5], [0.75], [1]])
     })
 
     it('should break after 50% of progress', () => {
@@ -76,10 +70,10 @@ describe('animate', () => {
         jest.runAllTimers()
         const { calls } = callback.mock
         expect(calls.length).toBe(10)
-        expect(calls[0]).toEqual([0.05, text, text])
-        expect(calls[3]).toEqual([0.2, text, text])
-        expect(calls[6]).toEqual([0.35, text, text])
-        expect(calls[9]).toEqual([0.5, text, text])
+        expect(calls[0]).toEqual([0.05])
+        expect(calls[3]).toEqual([0.2])
+        expect(calls[6]).toEqual([0.35])
+        expect(calls[9]).toEqual([0.5])
     })
 })
 
