@@ -44,19 +44,57 @@ const api = {
         }
     },
     setInterval: repeatDelay,
-    setTimeout: (...args) => {
-        const callback = args[0]
+    setTimeout: function(callback, delay, ...params) {
         if (callback == null) {
             return noRequest()
         }
-        args[0] = (...params) => {
+        let wrap = () => {
             callback.apply(null, params)
             return false
         }
-        return repeatDelay.apply(null, args)
+        return repeatDelay(wrap, delay)
     },
 
-    setTaskout: (callback, duration, steps, ...params) => {
+    waitTimeout: function(callback, delay, ...params) {
+        let index = 0,
+            request = {}
+
+        const stack = []
+        const self = (...args) => {
+            stack.push(args)
+            request = {
+                waitTimeout: self,
+                id: -1
+            }
+            return request
+        }
+        setTimeout(() => {
+            const resolve = () => {
+                let args = stack[index++]
+                if (args === undefined) {
+                    return
+                }
+                let callback = args[0]
+                if (callback == null) {
+                    return resolve()
+                }
+                args[0] = function() {
+                    let result = callback.apply(null, arguments)
+                    if (result !== false && request.id !== -1) {
+                        resolve()
+                    }
+                    return false
+                }
+                let { id } = repeatDelay.apply(null, args)
+                request.id = id
+            }
+            resolve()
+        }, 0)
+
+        return self.apply(null, arguments)
+    },
+
+    setTaskout: function(callback, duration, steps, ...params) {
         if (callback == null) {
             return noRequest()
         }
@@ -76,7 +114,7 @@ const api = {
         return request
     },
 
-    setRandval: (callback, delay, variation, ...params) => {
+    setRandval: function(callback, delay, variation, ...params) {
         if (callback == null) {
             return noRequest()
         }
