@@ -1,5 +1,4 @@
-import glitchText from '../src/index'
-import aframe from '../src/.utils/aframe'
+import glitchText from '../src/glitch-text'
 
 const createNode = () => {
     let node = document.createElement('div')
@@ -10,19 +9,18 @@ const createDateNow = (now = 0) => {
     return () => now++
 }
 
-beforeEach(() => {
-    global.Date.now = createDateNow()
-    jest.clearAllTimers()
-})
-
 global.requestAnimationFrame = callback => {
     return setTimeout(callback, 1)
 }
 global.cancelAnimationFrame = requestId => {
     clearTimeout(requestId)
 }
-
 jest.useFakeTimers()
+
+beforeEach(() => {
+    global.Date.now = createDateNow()
+    jest.clearAllTimers()
+})
 
 describe('initialize and error handling', () => {
     it('should throw on incorrect element', () => {
@@ -39,17 +37,21 @@ describe('initialize and error handling', () => {
                 random: expect.any(Function),
                 animate: expect.any(Function),
                 repeat: expect.any(Function),
-                stop: expect.any(Function)
+                stop: expect.any(Function),
+                restore: expect.any(Function)
             })
         )
     })
 })
 
 describe('animate', () => {
-    // duration is irrelevant in this tests
-
     it('should throw on falsy callback', () => {
+        const glitch = glitchText(createNode())
         expect(() => glitch.animate()).toThrow()
+        expect(() => glitch.animate(10)).toThrow()
+        expect(() => glitch.animate(10, 5)).toThrow()
+        expect(() => glitch.animate(10, 5, null)).toThrow()
+        jest.runTimersToTime(200)
     })
 
     it('should call 4 times with progress', () => {
@@ -57,9 +59,11 @@ describe('animate', () => {
         const callback = jest.fn()
         glitch.animate(50, 4, callback)
 
-        jest.runAllTimers()
-        const { calls } = callback.mock
-        expect(calls).toEqual([[0.25], [0.5], [0.75], [1]])
+        jest.runTimersToTime(200)
+        // prettier-ignore
+        expect(callback.mock.calls).toEqual([
+            [0.25], [0.5], [0.75], [1]
+        ])
     })
 
     it('should break after 50% of progress', () => {
@@ -67,19 +71,43 @@ describe('animate', () => {
         const callback = jest.fn(progress => progress < 0.5)
         glitch.animate(50, 20, callback)
 
-        jest.runAllTimers()
-        const { calls } = callback.mock
-        expect(calls.length).toBe(10)
-        expect(calls[0]).toEqual([0.05])
-        expect(calls[3]).toEqual([0.2])
-        expect(calls[6]).toEqual([0.35])
-        expect(calls[9]).toEqual([0.5])
+        jest.runTimersToTime(200)
+        // prettier-ignore
+        expect(callback.mock.calls).toEqual([
+            [0.05], [0.1], [0.15], [0.2], [0.25],
+            [0.3], [0.35], [0.4], [0.45], [0.5]
+        ])
+    })
+
+    it('should change text by returning string', () => {
+        const node = createNode()
+        const source = node.textContent
+        const glitch = glitchText(node)
+
+        const callback = jest.fn(progress => {
+            let end = Math.round(source.length * (1 - progress))
+            return source.slice(0, end)
+        })
+        glitch.animate(4, 4, callback)
+
+        expect(node.textContent).toBe('the quick brown fox')
+        jest.runTimersToTime(1)
+        expect(node.textContent).toBe('the quick brow')
+        jest.runTimersToTime(1)
+        expect(node.textContent).toBe('the quick ')
+        jest.runTimersToTime(1)
+        expect(node.textContent).toBe('the q')
     })
 })
 
 describe('repeat', () => {
     it('should throw on falsy callback', () => {
+        const glitch = glitchText(createNode())
         expect(() => glitch.repeat()).toThrow()
+        expect(() => glitch.repeat(10)).toThrow()
+        expect(() => glitch.repeat(10, 5)).toThrow()
+        expect(() => glitch.repeat(10, 5, null)).toThrow()
+        jest.runTimersToTime(200)
     })
 
     it('should call 10 times (every 20 sec)', () => {
@@ -88,29 +116,26 @@ describe('repeat', () => {
         glitch.repeat(20, 0, callback)
 
         jest.runTimersToTime(200)
-        const { calls } = callback.mock
-        expect(calls.length).toBe(10)
+        expect(callback).toHaveBeenCalledTimes(10)
     })
 
     it('should stop after 10 repeats', () => {
-        let limit = 10
+        let limit = 15
         const glitch = glitchText(createNode())
         const callback = jest.fn(() => --limit > 0)
         glitch.repeat(10, 0, callback)
 
-        jest.runAllTimers()
-        const { calls } = callback.mock
-        expect(calls.length).toBe(10)
+        jest.runTimersToTime(200)
+        expect(callback).toHaveBeenCalledTimes(15)
     })
 
     it('should stop after 50 ms', () => {
         const glitch = glitchText(createNode())
         const callback = jest.fn()
-        glitch.repeat(10, 0, callback, 'uniqueName')
-        setTimeout(() => glitch.stop('uniqueName'), 51)
+        glitch.repeat(10, 0, callback)
+        setTimeout(() => glitch.stop(), 50 + 1)
 
         jest.runTimersToTime(200)
-        const { calls } = callback.mock
-        expect(calls.length).toBe(5)
+        expect(callback).toHaveBeenCalledTimes(5)
     })
 })
