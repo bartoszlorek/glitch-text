@@ -2,7 +2,7 @@
   "name": "glitch-text",
   "version": "1.0.0",
   "description": "Glitch Text AMD",
-  "main": "src/index.js",
+  "main": "src/glitch-text.js",
   "scripts": {
     "start": "webpack --progress --colors --watch",
     "build": "webpack -p --config webpack.config.lib.js",
@@ -15,10 +15,7 @@
   },
   "author": "Bartosz Lorek",
   "license": "MIT",
-  "dependencies": {
-    "fraction.js": "^4.0.8",
-    "lodash": "^4.17.4"
-  },
+  "dependencies": {},
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
