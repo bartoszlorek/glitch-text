@@ -1,6 +1,6 @@
-function baseSlice(shredder, string, start, end) {
+function baseSlice(method, string, start, end) {
     let length = string == null ? 0 : string.length
-    if (!length) {
+    if (!length || method == null) {
         return ''
     }
     start = start == null ? 0 : start
@@ -22,7 +22,7 @@ function baseSlice(shredder, string, start, end) {
 
     return (
         string.substring(0, start) +
-        shredder(string.substring(start, end)) +
+        method(string.substring(start, end)) +
         string.substring(end)
     )
 }

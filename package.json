@@ -2,7 +2,7 @@
   "name": "glitch-text",
   "version": "1.0.0",
   "description": "Glitch Text AMD",
-  "main": "src/glitch-text.js",
+  "main": "src/index.js",
   "scripts": {
     "start": "webpack --progress --colors --watch",
     "build": "webpack -p --config webpack.config.lib.js",
