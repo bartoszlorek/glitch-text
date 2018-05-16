@@ -1,4 +1,5 @@
 import randomizer from '../src/.internal/randomizer'
+import { randomness } from './.test-utils.js'
 
 it('should handle undefined charset', () => {
     const random = randomizer()
@@ -6,13 +7,15 @@ it('should handle undefined charset', () => {
 })
 
 it('should handle falsy string', () => {
-    const random = randomizer('xxx')
+    global.Math.random = randomness(8)
+    const random = randomizer('fd9g7f&')
     expect(random()).toBe('')
     expect(random(null)).toBe('')
     expect(random('')).toBe('')
 })
 
 it('should replace string with charset', () => {
-    const random = randomizer('xxx')
-    expect(random('quick brown fox')).toBe('xxxxxxxxxxxxxxx')
+    global.Math.random = randomness(15)
+    const random = randomizer('8dgf6*^')
+    expect(random('quick brown fox')).toBe('888ddggff66**^^')
 })

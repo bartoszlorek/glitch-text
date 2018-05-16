@@ -10,6 +10,10 @@ function shuffle(arr) {
     return arr
 }
 
+// amount = 4
+// length = 10
+// => [0, 9, 4, 1]
+
 function randomIndices(amount, length) {
     length = length > amount ? length : amount
     let result = [],

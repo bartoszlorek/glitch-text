@@ -5,12 +5,20 @@ function baseRandom(method, string, percent) {
     if (!length || method == null) {
         return ''
     }
-    let indices = randomIndices(Math.floor(percent * length), length),
+    if (!percent) {
+        return string
+    }
+    let amount = Math.floor(percent * length),
+        indices = randomIndices(amount, length),
+        remains = indices.length,
         charset = string.split('')
 
-    indices.forEach(index => {
-        charset[index] = method(charset[index])
-    })
+    while (remains--) {
+        let index = indices[remains]
+        if (charset[index] !== ' ') {
+            charset[index] = method(charset[index])
+        }
+    }
     return charset.join('')
 }
 
