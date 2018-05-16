@@ -1,30 +1,8 @@
+import spliceString from '../.utils/splice-string'
+
+// todo: start and end as a percent value
 function baseSlice(method, string, start, end) {
-    let length = string == null ? 0 : string.length
-    if (!length || method == null) {
-        return ''
-    }
-    start = start == null ? 0 : start
-    end = end === undefined ? length : end
-
-    if (start < 0) {
-        start = -start > length ? 0 : length + start
-    }
-    end = end > length ? length : end
-    if (end < 0) {
-        end += length
-    }
-    if (start > end && start < length) {
-        end = [start, (start = end)][0]
-    }
-    if (start >= length) {
-        return string
-    }
-
-    return (
-        string.substring(0, start) +
-        method(string.substring(start, end)) +
-        string.substring(end)
-    )
+    return spliceString(string, start, end, method)
 }
 
 export default baseSlice
