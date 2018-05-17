@@ -11,7 +11,7 @@ function randomIndices(amount, length) {
         return []
     }
 
-    // simple array shuffle is enough
+    // simple shuffling is enough
     if (amount === length) {
         return shuffle(enumArray(amount))
     }
