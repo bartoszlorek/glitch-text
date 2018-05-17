@@ -14,21 +14,23 @@ describe('error handling', () => {
 
 describe('start and end', () => {
     const string = 'the quick brown fox'
+    const slice = baseSlice.bind(null, method)
 
     it('should replace END with length', () => {
-        expect(baseSlice(method, string, 10)).toBe('the quick .........')
+        expect(slice(string, 0.5)).toBe('the quick..........')
+        expect(slice(string, 0.75)).toBe('the quick brow.....')
     })
 
     it('should swap START and END', () => {
-        expect(baseSlice(method, string, 10, 8)).toBe('the quic..brown fox')
-        expect(baseSlice(method, string, -4, -10)).toBe('the quick...... fox')
+        expect(slice(string, 0.5, 0.25)).toBe('the ..... brown fox')
+        expect(slice(string, -0.1, -0.5)).toBe('the quick........ox')
     })
 
     it('should take START as an offset from the end', () => {
-        expect(baseSlice(method, string, -4)).toBe('the quick brown....')
+        expect(slice(string, -0.5)).toBe('the quick..........')
     })
 
     it('should take END as an offset from the end', () => {
-        expect(baseSlice(method, string, 5, -4)).toBe('the q.......... fox')
+        expect(slice(string, 0.5, -0.1)).toBe('the quick........ox')
     })
 })

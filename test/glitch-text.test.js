@@ -23,7 +23,7 @@ it('should modify string by slice method', () => {
     global.Math.random = randomness(10)
     const node = createNode()
     const glitch = glitchText(node, '78fgd89d')
-    glitch.slice(0, 9)
+    glitch.slice(0, 0.5)
     expect(node.textContent).toBe('778fgdd89 brown fox')
 })
 
@@ -44,7 +44,7 @@ it('should restore original text', () => {
     global.Math.random = randomness(8)
     const node = createNode()
     const glitch = glitchText(node, '7df^&')
-    glitch.slice(8)
+    glitch.slice(0.45)
     expect(node.textContent).toBe('the quic77ddf^^&77d')
     glitch.restore()
     expect(node.textContent).toBe('the quick brown fox')
@@ -53,9 +53,9 @@ it('should restore original text', () => {
 it('should update changed text', () => {
     const node = createNode()
     const glitch = glitchText(node, '.')
-    glitch.slice(8)
+    glitch.slice(0.45)
     expect(node.textContent).toBe('the quic...........')
     node.textContent = 'jumps over lazy dog'
-    glitch.update().slice(10)
-    expect(node.textContent).toBe('jumps over.........')
+    glitch.update().slice(0.75)
+    expect(node.textContent).toBe('jumps over laz.....')
 })
