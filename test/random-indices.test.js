@@ -23,5 +23,5 @@ it('should return n-length array', () => {
 it('should return random indices', () => {
     global.Math.random = randomness(4)
     let indices = randomIndices(10)
-    expect(indices).toEqual([2, 3, 6, 1, 8, 0, 4, 5, 7, 9])
+    expect(indices).toEqual([7, 6, 3, 8, 1, 9, 5, 4, 2, 0])
 })

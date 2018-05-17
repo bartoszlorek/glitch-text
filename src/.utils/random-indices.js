@@ -1,14 +1,5 @@
-// The Fisher–Yates shuffle algorithm
-function shuffle(arr) {
-    var i, j, x
-    for (i = arr.length - 1; i > 0; i--) {
-        j = Math.floor(Math.random() * (i + 1))
-        x = arr[i]
-        arr[i] = arr[j]
-        arr[j] = x
-    }
-    return arr
-}
+import enumArray from './enum-array'
+import shuffle from './shuffle'
 
 // amount = 4
 // length = 10
@@ -16,30 +7,24 @@ function shuffle(arr) {
 
 function randomIndices(amount, length) {
     length = length > amount ? length : amount
-    let result = [],
-        isUnique
-
     if (!amount) {
-        return result
+        return []
     }
 
-    // only need to shuffle result
+    // simple array shuffle is enough
     if (amount === length) {
-        while (amount--) {
-            result.push(amount)
-        }
-        return shuffle(result)
+        return shuffle(enumArray(amount))
     }
 
-    // real picking from greater set
-    while (amount--) {
-        isUnique = false
-        while (!isUnique) {
-            let index = Math.floor(Math.random() * length)
-            if (result.indexOf(index) < 0) {
-                result.push(index)
-                isUnique = true
-            }
+    // pick from greater set
+    const buffer = {}
+    const result = []
+    while (amount) {
+        let index = Math.floor(Math.random() * length)
+        if (buffer[index] === undefined) {
+            buffer[index] = true
+            result.push(index)
+            amount -= 1
         }
     }
     return result
