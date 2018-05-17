@@ -1,7 +1,9 @@
-export function randomness(length = 1) {
-    let index = 0
-    const get = n => (Math.abs(n) % length) / length
-    const api = () => get(index++)
-    api.step = get
-    return api
+export function randomness(length = 1, countLimit = 100000) {
+    let index = -1
+    return () => {
+        if (++index > countLimit) {
+            throw new Error(`Ran random ${countLimit} times! Assuming we've hit an infinite recursion.`)
+        }
+        return (index % length) / length
+    }
 }
