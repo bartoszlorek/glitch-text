@@ -1,17 +1,17 @@
-function createRandomizer(charset = '') {
-    const length = charset.length
-    const random = () => {
+function createRandomizer(charset) {
+    const length = charset == null ? 0 : charset.length
+    const sample = () => {
         return charset[Math.floor(Math.random() * length)]
     }
+    if (!length) {
+        return () => ''
+    }
     return string => {
-        if (!length) {
-            return ''
-        }
         let index = string == null ? 0 : string.length,
             result = ''
 
         while (index--) {
-            result += random()
+            result += sample()
         }
         return result
     }
