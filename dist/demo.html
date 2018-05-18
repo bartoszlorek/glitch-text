@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <title>glitch-text demo</title>
+    <style>body{font-family:sans-serif}</style>
+</head>
+<body>
+    <h1 id="glitch1">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h1>
+    <p>this.glitchSlice(progress);<br>from left to right</p>
+
+    <h1 id="glitch2">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h1>
+    <p>this.glitchSlice(progress, progress+0.25);<br>from left to right as a slice</p>
+
+    <h1 id="glitch3">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h1>
+    <p>this.glitchSlice(-progress);<br>from right to left</p>
+
+    <h1 id="glitch4">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h1>
+    <p>this.glitchSlice(-progress-0.25, -progress);<br>from right to left as a slice</p>
+
+    <h1 id="glitch5">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h1>
+    <p>this.glitchSlice(-progress/2+0.5, progress/2+0.5);<br>from center to edges</p>
+
+    <h1 id="glitch6">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h1>
+    <p>this.glitchSlice(progress/2, -progress/2);<br>from edges to center</p>
+
+    <h2 id="glitch7">and many, many more...</h2>
+    <p>if (progress > .5) return this.glitchRandom(1-progress);<br>glitch 50% of chars randomly every 5 seconds</p>
+
+    <script src="./glitch-text.umd.js"></script>
+    <script type="text/javascript">
+        (function() {
+            console.log(glitchText)
+
+            // var duration = 4,
+            //     steps = 50;
+
+            // new GlitchText('glitch1').animate(duration, steps, function(progress) {
+            //     return this.glitchSlice(progress);
+            // });
+            // new GlitchText('glitch2').animate(duration, steps, function(progress) {
+            //     return this.glitchSlice(progress, progress+0.25);
+            // });
+            // new GlitchText('glitch3').animate(duration, steps, function(progress) {
+            //     return this.glitchSlice(-progress);
+            // });
+            // new GlitchText('glitch4').animate(duration, steps, function(progress) {
+            //     return this.glitchSlice(-progress-0.25, -progress);
+            // });
+            // new GlitchText('glitch5').animate(duration, steps, function(progress) {
+            //     return this.glitchSlice(-progress/2+0.5, progress/2+0.5);
+            // });
+            // new GlitchText('glitch6').animate(duration, steps, function(progress) {
+            //     return this.glitchSlice(progress/2, -progress/2);
+            // });
+
+            // // random tick every 5 seconds
+            // new GlitchText('glitch7').repeat(5, function() {
+            //     this.animate(.5, 10, function(progress) {
+            //         if (progress > .5) {
+            //             return this.glitchRandom(1-progress);
+            //         }
+            //     });
+            // }, 'unique_name');
+
+        }())
+    </script>
+
+</body>
+</html>
