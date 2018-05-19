@@ -1,71 +1,173 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <link href="https://fonts.googleapis.com/css?family=Fira+Mono:400,500&amp;subset=latin-ext" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="http://bartoszlorek.pl/run/.global/demo.style.css">
     <title>glitch-text demo</title>
-    <style>body{font-family:sans-serif}</style>
 </head>
+
 <body>
-    <h1 id="glitch1">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h1>
-    <p>this.glitchSlice(progress);<br>from left to right</p>
+    <div class="wrap">
+        <h1>glitch-text</h1>
+        <code class="javascript">
+            import glitchText, { animate, repeat } from 'glitch-text'
+            const  glitch = glitchText(element)
+        </code>
+    </div>
 
-    <h1 id="glitch2">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h1>
-    <p>this.glitchSlice(progress, progress+0.25);<br>from left to right as a slice</p>
+    <div id="demo1" class="wrap">
+        <div class="code-scope">
+            <h3>The quick brown fox jumps over the lazy dog.</h3>
+        </div>
+        <code class="javascript">
+            // from left to right
+            animate(2000, 50, progress => {
+                glitch.slice(progress)
+            })
+        </code>
+    </div>
 
-    <h1 id="glitch3">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h1>
-    <p>this.glitchSlice(-progress);<br>from right to left</p>
+    <div id="demo2" class="wrap">
+        <div class="code-scope">
+            <h3>The quick brown fox jumps over the lazy dog.</h3>
+        </div>
+        <code class="javascript">
+            // from left to right as a slice of thickness 0.25
+            animate(2000, 50, progress => {
+                glitch.slice(progress, progress + 0.25)
+            })
+        </code>
+    </div>
 
-    <h1 id="glitch4">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h1>
-    <p>this.glitchSlice(-progress-0.25, -progress);<br>from right to left as a slice</p>
+    <div id="demo3" class="wrap">
+        <div class="code-scope">
+            <h3>The quick brown fox jumps over the lazy dog.</h3>
+        </div>
+        <code class="javascript">
+            // from right to left
+            animate(2000, 50, progress => {
+                glitch.slice(-progress)
+            })
+        </code>
+    </div>
 
-    <h1 id="glitch5">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h1>
-    <p>this.glitchSlice(-progress/2+0.5, progress/2+0.5);<br>from center to edges</p>
+    <div id="demo4" class="wrap">
+        <div class="code-scope">
+            <h3>The quick brown fox jumps over the lazy dog.</h3>
+        </div>
+        <code class="javascript">
+            // from right to left as a slice of thickness 0.25
+            animate(2000, 50, progress => {
+                glitch.slice(-progress - 0.25, -progress)
+            })
+        </code>
+    </div>
 
-    <h1 id="glitch6">Lorem ipsum dolor sit amet, consectetur adipiscing elit</h1>
-    <p>this.glitchSlice(progress/2, -progress/2);<br>from edges to center</p>
+    <div id="demo5" class="wrap">
+        <div class="code-scope">
+            <h3>The quick brown fox jumps over the lazy dog.</h3>
+        </div>
+        <code class="javascript">
+            // from center to edges
+            animate(2000, 50, progress => {
+                glitch.slice(-progress/2 + 0.5, progress/2 + 0.5)
+            })
+        </code>
+    </div>
 
-    <h2 id="glitch7">and many, many more...</h2>
-    <p>if (progress > .5) return this.glitchRandom(1-progress);<br>glitch 50% of chars randomly every 5 seconds</p>
+    <div id="demo6" class="wrap">
+        <div class="code-scope">
+            <h3>The quick brown fox jumps over the lazy dog.</h3>
+        </div>
+        <code class="javascript">
+            // from edges to center
+            animate(2000, 50, progress => {
+                glitch.slice(progress/2, -progress/2)
+            })
+        </code>
+    </div>
 
+    <div id="demo7" class="wrap">
+        <div class="code-scope">
+            <h3>The quick brown fox jumps over the lazy dog.</h3>
+        </div>
+        <code class="javascript">
+            // glitch 50% of chars randomly every 2 seconds (+/- 0.5)
+            repeat(2000, 500, () => {
+                animate(500, 10, progress => {
+                    if (progress > 0.5) {
+                        glitch.random(1 - progress)
+                    }
+                })
+            })
+        </code>
+    </div>
+
+    <div class="footer">
+        Bartosz Lorek <a href="http://bartoszlorek.pl">www.bartoszlorek.pl</a>
+    </div>
+
+    <script src="http://bartoszlorek.pl/run/.global/demo.highlight.js"></script>
+    <script src="http://bartoszlorek.pl/run/.global/demo.script.js"></script>
     <script src="./glitch-text.umd.js"></script>
+
     <script type="text/javascript">
-        (function() {
-            console.log(glitchText)
+        runDemoCode("#demo1", function (nodes) {
+            var glitch = glitchText(nodes[0])
+            glitchText.animate(2000, 50, progress => {
+                glitch.slice(progress)
+            })
+        }).runAfter(200)
 
-            // var duration = 4,
-            //     steps = 50;
+        runDemoCode("#demo2", function (nodes) {
+            var glitch = glitchText(nodes[0])
+            glitchText.animate(2000, 50, progress => {
+                glitch.slice(progress, progress + 0.25)
+            })
+        }).runAfter(800)
 
-            // new GlitchText('glitch1').animate(duration, steps, function(progress) {
-            //     return this.glitchSlice(progress);
-            // });
-            // new GlitchText('glitch2').animate(duration, steps, function(progress) {
-            //     return this.glitchSlice(progress, progress+0.25);
-            // });
-            // new GlitchText('glitch3').animate(duration, steps, function(progress) {
-            //     return this.glitchSlice(-progress);
-            // });
-            // new GlitchText('glitch4').animate(duration, steps, function(progress) {
-            //     return this.glitchSlice(-progress-0.25, -progress);
-            // });
-            // new GlitchText('glitch5').animate(duration, steps, function(progress) {
-            //     return this.glitchSlice(-progress/2+0.5, progress/2+0.5);
-            // });
-            // new GlitchText('glitch6').animate(duration, steps, function(progress) {
-            //     return this.glitchSlice(progress/2, -progress/2);
-            // });
+        runDemoCode("#demo3", function (nodes) {
+            var glitch = glitchText(nodes[0])
+            glitchText.animate(2000, 50, progress => {
+                glitch.slice(-progress)
+            })
+        }).runAfter(1400)
 
-            // // random tick every 5 seconds
-            // new GlitchText('glitch7').repeat(5, function() {
-            //     this.animate(.5, 10, function(progress) {
-            //         if (progress > .5) {
-            //             return this.glitchRandom(1-progress);
-            //         }
-            //     });
-            // }, 'unique_name');
+        runDemoCode("#demo4", function (nodes) {
+            var glitch = glitchText(nodes[0])
+            glitchText.animate(2000, 50, progress => {
+                glitch.slice(-progress - 0.25, -progress)
+            })
+        }).runAfter(2000)
 
-        }())
+        runDemoCode("#demo5", function (nodes) {
+            var glitch = glitchText(nodes[0])
+            glitchText.animate(2000, 50, progress => {
+                glitch.slice(-progress/2 + 0.5, progress/2 + 0.5)
+            })
+        }).runAfter(2600)
+
+        runDemoCode("#demo6", function (nodes) {
+            var glitch = glitchText(nodes[0])
+            glitchText.animate(2000, 50, progress => {
+                glitch.slice(progress/2, -progress/2)
+            })
+        }).runAfter(3200)
+
+        runDemoCode("#demo7", function (nodes) {
+            var glitch = glitchText(nodes[0])
+            glitchText.repeat(2000, 500, () => {
+                glitchText.animate(500, 10, progress => {
+                    if (progress > 0.5) {
+                        glitch.random(1 - progress)
+                    }
+                })
+            })
+        }).runAfter()
     </script>
-
 </body>
+
 </html>

@@ -1,11 +1,8 @@
 import glitchText from './glitch-text'
 import { animate, repeat, stop } from './utilities'
 
-const api = {
-    glitchText,
-    animate,
-    repeat,
-    stop
-}
+glitchText.animate = animate
+glitchText.repeat = repeat
+glitchText.stop = stop
 
-export default api
+export default glitchText
