@@ -1,78 +1,110 @@
 # Glitch Text
 
-
 [demo](http://bartoszlorek.pl/run/glitch-text/)
 
+## Constructor
+```javascript
+import glitchText from 'glitch-text'
 
-## Usage
-Low-level methods return element's glitched textContent.
-
-```
-.glitchSlice( [start, end] ) // similar to native Array slice method, but in percentage (0-1)
-.glitchRandom( percent ) // random chars in given amount
-```
-
-Call callback `steps` times in `duration` (seconds) with `progress` as a callback's argument. Unique `name` of task is used to stop single method. Note: callback returning `string` sets new text.
-
-```
-.animate( [duration, steps, ]callback[, name] ) // default: 1s, 20s
+const charset = '8sd8gGHsDKh*&d' // optional
+const glitch = glitchText(element, charset)
 ```
 
-Similar to setInterval but `frequency` is a random (changes every call) amount of time between 0 and given value.
+## Methods
 
+### slice
+```javascript
+.slice(start, end)  // start, end: [Number] 0-1
 ```
-.repeat( [frequency, ]callback[, name] ) // default: 20s
-```
+Set random characters between start and end position. Similar to the native Array slice but instead of indices use percents. This method changes text content of given element.
 
-Clear animation set with the methods above. Stop all when `name` is undefined.
-
+### random
+```javascript
+.random(percent)    // percent: [Number] 0-1
 ```
-.stop( [name] )
-```
+Set random characters in given percentage amount. This method changes text content of given element.
 
-Includes https://github.com/ubery/aframe
+### restore
+```javascript
+.restore()
+```
+Restore initial text. This method changes text content of given element.
+
+### update
+```javascript
+.update()
+```
+Set current text content of given element as a initial text.
+
+## Static Methods
+
+### animate
+```javascript
+.animate(duration, steps, callback)
+```
+Method similar to the `setTimeout` but call the function `steps` times in `duration` time. The `callback` function is invoked with arguments: `progress` which is a number from 0 to 1. Method returns the `request` object.
+
+### repeat
+```javascript
+.repeat(freq, variation, callback)
+```
+Method similar to the `setInterval` but calls each iteration function after random `variation` time. Final delay time is calculated as `delay + random(+/-variation)`. Method returns the `request` object.
+
+### stop
+```javascript
+.stop()
+```
+Clear a request animation frame of methods above.
 
 ## Examples
 
-Animate heading in alternative ways. Then call random tick in intervals between 0 and 5 seconds. Finally after 30 seconds stop repetitions uniquely named.
+Animate heading in multiple ways.
 
 ```javascript
 // <h1 id="glitch">Heading</h1>
 
-var glitch = new GlitchText('glitch');
-glitch.animate(2, 40, function(progress) {
+import glitchText, { animate } from 'glitch-text'
+
+const element = document.querySelector('glitch')
+const glitch = glitchText(element)
+
+animate(2, 40, progress => {
     // from left to right
-    return this.glitchSlice(progress);
+    return glitch.slice(progress)
 
     // from left to right and as a thin slice
-    return this.glitchSlice(progress, progress+0.25);
+    return glitch.slice(progress, progress+0.25)
 
     // from right to left
-    return this.glitchSlice(-progress);
+    return glitch.slice(-progress)
     
     // from right to left and as a thin slice
-    return this.glitchSlice(-progress-0.25, -progress);
+    return glitch.slice(-progress-0.25, -progress)
 
     // from center to edges
-    return this.glitchSlice(-progress/2+0.5, progress/2+0.5);
+    return glitch.slice(-progress/2+0.5, progress/2+0.5)
 
     // from edges to center
-    return this.glitchSlice(progress/2, -progress/2);
+    return glitch.slice(progress/2, -progress/2)
 
     // and many more...
-});
+})
+```
 
-// random tick every 5 seconds
-glitch.repeat(5, function() {
-    this.animate(.5, 10, function(progress) {
-        if (progress > .5) {
-            return this.glitchRandom(1-progress);
+Glitch 50% of chars randomly every 2 seconds (+/- 0.5) and stop after 30 seconds.
+
+```javascript
+import { repeat, stop } from 'glitch-text'
+
+const request = repeat(2000, 500, () => {
+    animate(500, 10, progress => {
+        if (progress > 0.5) {
+            glitch.random(1 - progress)
         }
-    });
-}, 'unique_name');
+    })
+})
 
-// stop ticking after 30 seconds
-aframe.setTimeout(function() {
-    glitch.stop('unique_name');
-}, 30 * 1000);
+setTimeout(() {
+    stop(request)
+}, 30 * 1000)
 ```
